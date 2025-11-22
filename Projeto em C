@@ -1,0 +1,150 @@
+#include <stdio.h>
+#define MAX 100
+
+// Estrutura para guardar os produtos
+struct Produto {
+    char nome[50];
+    int codigo;
+    int quantidade;
+    int minimo;
+};
+
+struct Produto lista[MAX];
+int total = 0;
+
+// Função para buscar produto pelo código
+int buscar(int codigo) {
+    for (int i = 0; i < total; i++) {
+        if (lista[i].codigo == codigo) return i;
+    }
+    return -1;
+}
+
+// Cadastro de produto
+void cadastrar() {
+    if (total >= MAX) {
+        printf("Limite de produtos atingido.\n");
+        return;
+    }
+
+    printf("Nome: ");
+    scanf("%s", lista[total].nome);
+
+    printf("Código: ");
+    scanf("%d", &lista[total].codigo);
+
+    printf("Quantidade: ");
+    scanf("%d", &lista[total].quantidade);
+
+    printf("Mínimo: ");
+    scanf("%d", &lista[total].minimo);
+
+    if (lista[total].quantidade < lista[total].minimo) {
+        printf("Alerta: estoque baixo!\n");
+    }
+
+    printf("Produto cadastrado: %s | Cod: %d | Qtd: %d | Min: %d\n",
+           lista[total].nome, lista[total].codigo,
+           lista[total].quantidade, lista[total].minimo);
+
+    total++;
+}
+
+// Listar todos os produtos
+void listar() {
+    for (int i = 0; i < total; i++) {
+        printf("[%d] %s | Cod: %d | Qtd: %d | Min: %d\n",
+               i, lista[i].nome, lista[i].codigo,
+               lista[i].quantidade, lista[i].minimo);
+    }
+}
+
+// Consultar produto por código
+void consultar() {
+    int cod;
+    printf("Código: ");
+    scanf("%d", &cod);
+
+    int idx = buscar(cod);
+    if (idx == -1) {
+        printf("Produto não encontrado.\n");
+        return;
+    }
+
+    printf("%s | Qtd: %d | Min: %d\n",
+           lista[idx].nome, lista[idx].quantidade, lista[idx].minimo);
+
+    if (lista[idx].quantidade < lista[idx].minimo) {
+        printf("Reposição necessária!\n");
+    }
+}
+
+// Entrada de estoque
+void entrada() {
+    int cod, qtd;
+    printf("Código: ");
+    scanf("%d", &cod);
+
+    int idx = buscar(cod);
+    if (idx == -1) {
+        printf("Produto não encontrado.\n");
+        return;
+    }
+
+    printf("Quantidade para entrada: ");
+    scanf("%d", &qtd);
+
+    lista[idx].quantidade += qtd;
+    printf("Estoque atualizado: %d\n", lista[idx].quantidade);
+}
+
+// Saída de estoque
+void saida() {
+    int cod, qtd;
+    printf("Código: ");
+    scanf("%d", &cod);
+
+    int idx = buscar(cod);
+    if (idx == -1) {
+        printf("Produto não encontrado.\n");
+        return;
+    }
+
+    printf("Quantidade para saída: ");
+    scanf("%d", &qtd);
+
+    if (qtd <= lista[idx].quantidade) {
+        lista[idx].quantidade -= qtd;
+        printf("Estoque atualizado: %d\n", lista[idx].quantidade);
+    } else {
+        printf("Estoque insuficiente.\n");
+    }
+}
+
+// Programa principal com menu
+int main() {
+    int opcao;
+
+    do {
+        printf("\n--- MENU ---\n");
+        printf("1 - Cadastrar produto\n");
+        printf("2 - Listar produtos\n");
+        printf("3 - Consultar produto\n");
+        printf("4 - Entrada de estoque\n");
+        printf("5 - Saída de estoque\n");
+        printf("0 - Sair\n");
+        printf("Opção: ");
+        scanf("%d", &opcao);
+
+        if (opcao == 1) cadastrar();
+        else if (opcao == 2) listar();
+        else if (opcao == 3) consultar();
+        else if (opcao == 4) entrada();
+        else if (opcao == 5) saida();
+        else if (opcao == 0) printf("Encerrando...\n");
+        else printf("Opção inválida.\n");
+
+    } while (opcao != 0);
+
+    return 0;
+}
